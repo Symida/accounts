@@ -1,0 +1,8 @@
+spring:
+    application:
+        name: accounts
+    jpa:
+        show-sql: false
+        hibernate:
+            ddl-auto: none
+
