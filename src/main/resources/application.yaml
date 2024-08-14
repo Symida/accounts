@@ -1,16 +1,11 @@
 spring:
-    application:
-        name: accounts
+    application.name: accounts
     datasource:
       url: jdbc:postgresql://localhost:15432/postgres
       username: postgres
       password: postgres
     jpa:
         show-sql: false
-        hibernate:
-            ddl-auto: none
+        hibernate.ddl-auto: none
         database: POSTGRESQL
-    docker:
-        compose:
-            stop:
-                command: down
+    docker.compose.stop.command: down

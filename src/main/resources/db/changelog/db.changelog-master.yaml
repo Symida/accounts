@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - include:
-      file: v0.1.0/initial_schema.sql
+  - includeAll:
+      path: accounts
       relativeToChangelogFile: true
 
