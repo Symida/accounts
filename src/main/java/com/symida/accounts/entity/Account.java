@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ public class Account implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
 
+    @Column(name = "mail", nullable = false, unique = true)
+    private String mail;
+
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
@@ -31,8 +35,8 @@ public class Account implements UserDetails {
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "account_authority",
-            joinColumns = { @JoinColumn(name = "account_id") },
-            inverseJoinColumns = { @JoinColumn(name = "authority_id") }
+            joinColumns = {@JoinColumn(name = "account_id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_id")}
     )
     private Collection<Authority> authorities;
 
