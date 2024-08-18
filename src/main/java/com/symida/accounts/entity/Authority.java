@@ -8,12 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "authority")
 public class Authority implements GrantedAuthority {
