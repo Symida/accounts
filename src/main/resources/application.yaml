@@ -1,7 +1,7 @@
 spring:
     application.name: accounts
     datasource:
-      url: jdbc:postgresql://localhost:15432/postgres
+      url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/postgres}
       username: postgres
       password: postgres
     jpa:
