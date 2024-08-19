@@ -31,8 +31,8 @@ public class Account implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "mail", nullable = false, unique = true)
-    private String mail;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
