@@ -11,6 +11,10 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public interface AccountService {
 
+    Account login(Account account);
+
+    Account register(Account account);
+
     CompletableFuture<Account> getAccountByUsername(String username);
 
     CompletableFuture<Account> getAccount(UUID id);

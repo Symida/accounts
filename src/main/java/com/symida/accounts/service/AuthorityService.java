@@ -1,7 +1,10 @@
 package com.symida.accounts.service;
 
-import org.springframework.stereotype.Service;
+import com.symida.accounts.entity.Authority;
+import com.symida.accounts.entity.AuthorityEnum;
 
-@Service
-public class AuthorityService {
+import java.util.Optional;
+
+public interface AuthorityService {
+    Optional<Authority> findByAuthority(AuthorityEnum authority);
 }
