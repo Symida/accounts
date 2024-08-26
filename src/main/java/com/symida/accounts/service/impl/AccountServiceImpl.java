@@ -4,8 +4,6 @@ import com.symida.accounts.entity.Account;
 import com.symida.accounts.repository.AccountRepository;
 import com.symida.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,25 +21,15 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Account login(Account account) {
-        Optional<Account> foundAccount = Optional.empty();
-        if (account.getEmail() != null) {
-            foundAccount = accountRepository.findByEmail(account.getEmail());
-        }
-        if (account.getUsername() != null) {
-            foundAccount = accountRepository.findByUsername(account.getUsername());
-        }
-        if (foundAccount.isEmpty()) {
-            throw new UsernameNotFoundException("Username not found");
-        }
-        if (!passwordEncoder.matches(account.getPassword(), foundAccount.get().getPassword())) {
-            throw new BadCredentialsException("Bad credentials");
-        }
-        return foundAccount.get();
-    }
-
-    @Override
     public Account register(Account account) {
+        if (accountRepository.existsByUsername(account.getUsername())) {
+            return null;
+        }
+
+        if (accountRepository.existsByEmail(account.getEmail())) {
+            return null;
+        }
+
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accountRepository.save(account);
     }
@@ -87,3 +75,4 @@ public class AccountServiceImpl implements AccountService {
         return CompletableFuture.completedFuture(null);
     }
 }
+

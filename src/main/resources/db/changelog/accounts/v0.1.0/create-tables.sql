@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS account
 CREATE TABLE IF NOT EXISTS authority
 (
     id        BIGSERIAL PRIMARY KEY,
-    authority VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL
     );
 
 --changeset Danila Rudenko:2_3

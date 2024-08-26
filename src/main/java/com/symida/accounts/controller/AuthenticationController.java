@@ -3,7 +3,7 @@ package com.symida.accounts.controller;
 import com.symida.accounts.configuration.jwt.JwtUtils;
 import com.symida.accounts.entity.Account;
 import com.symida.accounts.entity.Authority;
-import com.symida.accounts.entity.AuthorityEnum;
+import com.symida.accounts.entity.AuthorityName;
 import com.symida.accounts.payload.request.LoginRequest;
 import com.symida.accounts.payload.request.RegisterRequest;
 import com.symida.accounts.payload.response.MessageResponse;
@@ -20,8 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,24 +32,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-
-    private final PasswordEncoder passwordEncoder;
-
     private final JwtUtils jwtUtils;
-
     private final AccountService accountService;
-
     private final AuthorityService authorityService;
-
-    @GetMapping
-    public String index() {
-        return "index";
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -86,14 +76,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest signUpRequest) {
-//    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-//        return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
-//    }
-//
-//    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-//        return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
-//    }
-
         Account account = Account.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
@@ -103,19 +85,18 @@ public class AuthenticationController {
         Set<String> strRoles = signUpRequest.getRole();
         Set<Authority> authorities = new HashSet<>();
 
-        //var checker = AuthorityEnum.ADMIN.name();
         if (strRoles == null) {
-            Authority authority = authorityService.findByAuthority(AuthorityEnum.ADMIN)
+            Authority authority = authorityService.findByName(AuthorityName.USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             authorities.add(authority);
         } else {
             strRoles.forEach(role -> {
                 Authority authority;
                 if (role.equals("admin")) {
-                    authority = authorityService.findByAuthority(AuthorityEnum.ADMIN)
+                    authority = authorityService.findByName(AuthorityName.ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                 } else {
-                    authority = authorityService.findByAuthority(AuthorityEnum.USER)
+                    authority = authorityService.findByName(AuthorityName.USER)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                 }
                 authorities.add(authority);
@@ -123,7 +104,10 @@ public class AuthenticationController {
         }
 
         account.setAuthorities(authorities);
-        accountService.register(account);
+        Account savedAccount = accountService.register(account);
+        if (savedAccount == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email or Username is already in use!"));
+        }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
@@ -134,25 +118,4 @@ public class AuthenticationController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
     }
-
-
 }
-
-//@PostMapping("/login")
-//public ResponseEntity<Account> login(@RequestBody Account account) {
-//
-//    Account foundAccount = accountService.login(account);
-//    return new ResponseEntity<>(
-//            foundAccount,
-//            HttpStatus.OK
-//    );
-//}
-//
-//@PostMapping("/register")
-//public ResponseEntity<Account> register(@RequestBody Account account) {
-//    Account savedAccount = accountService.register(account);
-//    return new ResponseEntity<>(
-//            savedAccount,
-//            HttpStatus.CREATED
-//    );
-//}

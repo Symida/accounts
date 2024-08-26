@@ -11,8 +11,6 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public interface AccountService {
 
-    Account login(Account account);
-
     Account register(Account account);
 
     CompletableFuture<Account> getAccountByUsername(String username);
@@ -26,6 +24,5 @@ public interface AccountService {
     CompletableFuture<Account> register(String username, String password, String email);
 
     CompletableFuture<Void> changePassword(UUID accountId, String password);
-
 
 }
