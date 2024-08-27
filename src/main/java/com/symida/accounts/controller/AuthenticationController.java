@@ -76,6 +76,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest signUpRequest) {
+        if (accountService.existsByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email or Username is already in use!"));
+        }
+
         Account account = Account.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
@@ -104,10 +108,6 @@ public class AuthenticationController {
         }
 
         account.setAuthorities(authorities);
-        Account savedAccount = accountService.register(account);
-        if (savedAccount == null) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email or Username is already in use!"));
-        }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

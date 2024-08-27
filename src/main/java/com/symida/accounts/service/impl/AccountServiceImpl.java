@@ -20,16 +20,12 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public boolean existsByUsernameOrEmail(String username, String email) {
+        return accountRepository.existsByUsernameOrEmail(username, email);
+    }
+
     @Override
     public Account register(Account account) {
-        if (accountRepository.existsByUsername(account.getUsername())) {
-            return null;
-        }
-
-        if (accountRepository.existsByEmail(account.getEmail())) {
-            return null;
-        }
-
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accountRepository.save(account);
     }

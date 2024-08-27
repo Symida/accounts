@@ -1,15 +1,15 @@
 package com.symida.accounts.service;
 
 import com.symida.accounts.entity.Account;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service
 public interface AccountService {
+
+    boolean existsByUsernameOrEmail(String username, String email);
 
     Account register(Account account);
 
