@@ -11,8 +11,7 @@ spring:
 symida:
   accounts:
     jwt:
-      cookieName: symida
       secret: aVeryLongSecretKeyThatIsAtLeast32Characters
-      expirationMs: 30000
+      expirationMs: 3000000
 springdoc:
   show-actuator: true

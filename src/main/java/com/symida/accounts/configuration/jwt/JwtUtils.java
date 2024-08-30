@@ -8,13 +8,10 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
@@ -27,36 +24,26 @@ public class JwtUtils {
     @Value("${symida.accounts.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${symida.accounts.jwt.cookieName}")
-    private String jwtCookie;
-
     @Value("${symida.accounts.jwt.expirationMs}")
     private int jwtExpirationMs;
 
-    public String getJwtFromCookies(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+    public String getJwtFromHeader(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
 
-        return cookie == null ? null : cookie.getValue();
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+
+        return null;
     }
 
-    public ResponseCookie generateJwtCookie(Account account) {
-        String jwt = generateTokenFromUsername(account.getUsername());
-        return ResponseCookie.from(jwtCookie, jwt)
-                .path("/auth")
-                .maxAge(24 * 60 * 60)
-                .httpOnly(true)
-                .build();
-    }
-
-    public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie.from(jwtCookie, null)
-                .path("/auth")
-                .build();
+    public String generateJwtHeader(Account account) {
+        return generateTokenFromUsername(account.getUsername());
     }
 
     public String getUserNameFromJwtToken(String token) {
         return buildJwtParser()
-                .parseEncryptedClaims(token)
+                .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
     }
