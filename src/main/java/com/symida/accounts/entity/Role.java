@@ -1,6 +1,6 @@
 package com.symida.accounts.entity;
 
-public enum AuthorityName {
+public enum Role {
     ADMIN,
     USER
 }

@@ -2,14 +2,12 @@ package com.symida.accounts.controller;
 
 import com.symida.accounts.configuration.jwt.JwtUtils;
 import com.symida.accounts.entity.Account;
-import com.symida.accounts.entity.Authority;
-import com.symida.accounts.entity.AuthorityName;
+import com.symida.accounts.entity.Role;
 import com.symida.accounts.payload.request.LoginRequest;
 import com.symida.accounts.payload.request.RegisterRequest;
 import com.symida.accounts.payload.response.MessageResponse;
 import com.symida.accounts.payload.response.UserInfoResponse;
 import com.symida.accounts.service.AccountService;
-import com.symida.accounts.service.AuthorityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -24,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,7 +33,6 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final AccountService accountService;
-    private final AuthorityService authorityService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -80,31 +75,13 @@ public class AuthenticationController {
         Account account = Account.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
+                .role(Role.USER)
                 .password(signUpRequest.getPassword())
                 .build();
 
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Authority> authorities = new HashSet<>();
+        account.setRole(Role.USER);
 
-        if (strRoles == null) {
-            Authority authority = authorityService.findByName(AuthorityName.USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            authorities.add(authority);
-        } else {
-            strRoles.forEach(role -> {
-                Authority authority;
-                if (role.equals("admin")) {
-                    authority = authorityService.findByName(AuthorityName.ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                } else {
-                    authority = authorityService.findByName(AuthorityName.USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                }
-                authorities.add(authority);
-            });
-        }
-
-        account.setAuthorities(authorities);
+        accountService.register(account);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

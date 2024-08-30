@@ -1,7 +1,5 @@
 version: "3.8"
 
-volumes:
-  accounts_db_data:
 
 services:
   accounts_db:
@@ -9,7 +7,5 @@ services:
     container_name: accounts_db
     ports:
       - 15432:5432
-    volumes:
-      - accounts_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
