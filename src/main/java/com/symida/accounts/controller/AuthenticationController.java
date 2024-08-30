@@ -48,11 +48,11 @@ public class AuthenticationController {
 
         return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtHeader)
                 .body(
-                        new UserInfoResponse(
-                                account.getId(),
-                                account.getUsername(),
-                                account.getEmail()
-                        )
+                        UserInfoResponse.builder()
+                                .id(account.getId())
+                                .username(account.getUsername())
+                                .email(account.getEmail())
+                                .build()
                 );
     }
 
