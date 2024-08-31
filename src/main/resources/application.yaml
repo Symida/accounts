@@ -1,10 +1,19 @@
 spring:
-    application.name: accounts
-    datasource:
-      url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/postgres}
-      username: postgres
-      password: postgres
-    jpa:
-        show-sql: false
-        hibernate.ddl-auto: none
-        database: POSTGRESQL
+  application.name: accounts
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/postgres}
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: none
+    database: POSTGRESQL
+symida:
+  accounts:
+    jwt:
+      secret: aVeryLongSecretKeyThatIsAtLeast32Characters
+      expirationMs: 3000000
+  ui:
+    host: ${UI_HOST:localhost:9000}
+springdoc:
+  show-actuator: true
