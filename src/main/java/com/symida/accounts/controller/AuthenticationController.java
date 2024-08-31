@@ -7,7 +7,7 @@ import com.symida.accounts.payload.request.LoginRequest;
 import com.symida.accounts.payload.request.RegisterRequest;
 import com.symida.accounts.payload.response.MessageResponse;
 import com.symida.accounts.payload.response.UserInfoResponse;
-import com.symida.accounts.service.AccountService;
+import com.symida.accounts.service.impl.AccountServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -28,25 +28,24 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager
-                .authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                loginRequest.getUsername(), loginRequest.getPassword()
-                        )
-                );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        var account = (Account) authentication.getPrincipal();
+        var jwtHeader = jwtUtils.generateJwtHeader(account);
 
-        Account account = (Account) authentication.getPrincipal();
-
-        String jwtHeader = jwtUtils.generateJwtHeader(account);
-
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtHeader)
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, jwtHeader)
                 .body(
                         UserInfoResponse.builder()
                                 .id(account.getId())
@@ -59,21 +58,21 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest signUpRequest) {
-        if (accountService.existsByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail())) {
+        if (accountService.existsByUsernameOrEmail(
+                signUpRequest.getUsername(),
+                signUpRequest.getEmail()
+        )) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email or Username is already in use!"));
         }
 
-        Account account = Account.builder()
+        var account = Account.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .role(Role.USER)
                 .password(signUpRequest.getPassword())
                 .build();
 
-        account.setRole(Role.USER);
-
         accountService.register(account);
-
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

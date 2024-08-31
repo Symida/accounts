@@ -27,22 +27,25 @@ public class JwtUtils {
     @Value("${symida.accounts.jwt.expirationMs}")
     private int jwtExpirationMs;
 
+    private final String tokenPrefix = "Bearer ";
+
+
     public String getJwtFromHeader(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
+        var header = "Authorization";
+        var bearerToken = request.getHeader(header);
 
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
+        if (bearerToken != null && bearerToken.startsWith(tokenPrefix)) {
+            return bearerToken.substring(tokenPrefix.length());
         }
-
         return null;
     }
 
     public String generateJwtHeader(Account account) {
-        return generateTokenFromUsername(account.getUsername());
+        return tokenPrefix + generateTokenFromUsername(account.getUsername());
     }
 
     public String getUserNameFromJwtToken(String token) {
-        return buildJwtParser()
+        return jwtParser()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
@@ -50,8 +53,7 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            buildJwtParser()
-                    .parse(authToken);
+            jwtParser().parse(authToken);
             return true;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
@@ -67,8 +69,8 @@ public class JwtUtils {
     }
 
     public String generateTokenFromUsername(String username) {
-        Instant now = Instant.now();
-        Instant expirationInstant = now.plusMillis(jwtExpirationMs);
+        var now = Instant.now();
+        var expirationInstant = now.plusMillis(jwtExpirationMs);
 
         return Jwts.builder()
                 .subject(username)
@@ -82,7 +84,7 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    private JwtParser buildJwtParser() {
+    private JwtParser jwtParser() {
         return Jwts.parser()
                 .verifyWith(key())
                 .build();

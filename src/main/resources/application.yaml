@@ -13,5 +13,7 @@ symida:
     jwt:
       secret: aVeryLongSecretKeyThatIsAtLeast32Characters
       expirationMs: 3000000
+  ui:
+    host: ${UI_HOST:localhost:9000}
 springdoc:
   show-actuator: true
