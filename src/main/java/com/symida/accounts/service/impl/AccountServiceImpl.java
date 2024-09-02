@@ -4,7 +4,6 @@ import com.symida.accounts.entity.Account;
 import com.symida.accounts.repository.AccountRepository;
 import com.symida.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -18,15 +17,18 @@ import java.util.concurrent.CompletableFuture;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Optional<Account> findByUsername(String username) {
+        return accountRepository.findByUsername(username);
+    }
 
     public boolean existsByUsernameOrEmail(String username, String email) {
         return accountRepository.existsByUsernameOrEmail(username, email);
     }
 
     @Override
-    public Account register(Account account) {
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+    public Account save(Account account) {
         return accountRepository.save(account);
     }
 
@@ -51,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public CompletableFuture<Account> register(String username, String password, String email) {
+    public CompletableFuture<Account> save(String username, String password, String email) {
         return CompletableFuture.completedFuture(
                 accountRepository.save(Account.builder()
                         .username(username)
