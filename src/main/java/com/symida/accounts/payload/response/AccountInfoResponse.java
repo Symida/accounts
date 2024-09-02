@@ -9,11 +9,15 @@ import java.util.UUID;
 @Data
 @Builder
 @AllArgsConstructor
-public class UserInfoResponse {
+public class AccountInfoResponse {
 
     private UUID id;
 
+    private String email;
+
     private String username;
 
-    private String email;
+    private String role;
+
+    private String password;
 }
