@@ -3,8 +3,8 @@ package com.symida.accounts.controller;
 import com.symida.accounts.entity.Account;
 import com.symida.accounts.entity.Role;
 import com.symida.accounts.payload.request.CreateRequest;
-import com.symida.accounts.payload.response.MessageResponse;
 import com.symida.accounts.payload.response.AccountInfoResponse;
+import com.symida.accounts.payload.response.MessageResponse;
 import com.symida.accounts.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class AccountsController {
             return ResponseEntity.notFound().build();
         }
 
-        ResponseEntity<?> response = ResponseEntity.ok(
+        return ResponseEntity.ok(
                 AccountInfoResponse.builder()
                         .id(account.get().getId())
                         .email(account.get().getEmail())
@@ -41,7 +41,6 @@ public class AccountsController {
                         .role(account.get().getRole().name())
                         .password(account.get().getPassword())
                         .build());
-        return response;
     }
 
     @PostMapping("/save")
