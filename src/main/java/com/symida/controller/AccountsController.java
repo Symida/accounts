@@ -1,11 +1,11 @@
-package com.symida.accounts.controller;
+package com.symida.controller;
 
-import com.symida.accounts.entity.Account;
-import com.symida.accounts.entity.Role;
-import com.symida.accounts.payload.request.CreateRequest;
-import com.symida.accounts.payload.response.AccountInfoResponse;
-import com.symida.accounts.payload.response.MessageResponse;
-import com.symida.accounts.service.AccountService;
+import com.symida.entity.Account;
+import com.symida.entity.Role;
+import com.symida.payload.request.CreateRequest;
+import com.symida.payload.response.AccountInfoResponse;
+import com.symida.payload.response.MessageResponse;
+import com.symida.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("accounts")
 @RequiredArgsConstructor
 public class AccountsController {
 
     private final AccountService accountService;
 
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getAccountByUsername(@Valid @RequestParam String username) {
+    @GetMapping
+    public ResponseEntity<?> getAccountByUsername(@RequestParam String username) {
         Optional<Account> account = accountService.findByUsername(username);
         if (account.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -43,12 +43,9 @@ public class AccountsController {
                         .build());
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<?> createAccount(@Valid @RequestBody CreateRequest createRequest) {
-        if (accountService.existsByUsernameOrEmail(
-                createRequest.getUsername(),
-                createRequest.getEmail())
-        ) {
+        if (accountService.existsByUsernameOrEmail(createRequest.getUsername(), createRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email or Username is already in use!"));

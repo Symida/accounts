@@ -1,4 +1,4 @@
-package com.symida.accounts.payload.request;
+package com.symida.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

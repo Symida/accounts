@@ -1,4 +1,4 @@
-package com.symida.accounts.entity;
+package com.symida.entity;
 
 public enum Role {
     ADMIN,

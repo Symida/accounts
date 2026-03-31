@@ -1,4 +1,4 @@
-package com.symida.accounts.payload.response;
+package com.symida.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,8 +1,8 @@
-package com.symida.accounts.service.impl;
+package com.symida.service.impl;
 
-import com.symida.accounts.entity.Account;
-import com.symida.accounts.repository.AccountRepository;
-import com.symida.accounts.service.AccountService;
+import com.symida.entity.Account;
+import com.symida.repository.AccountRepository;
+import com.symida.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByUsername(username);
     }
 
+	@Override
     public boolean existsByUsernameOrEmail(String username, String email) {
         return accountRepository.existsByUsernameOrEmail(username, email);
     }

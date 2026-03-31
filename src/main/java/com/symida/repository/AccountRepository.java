@@ -1,6 +1,6 @@
-package com.symida.accounts.repository;
+package com.symida.repository;
 
-import com.symida.accounts.entity.Account;
+import com.symida.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

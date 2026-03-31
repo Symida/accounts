@@ -1,4 +1,4 @@
-package com.symida.accounts;
+package com.symida;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

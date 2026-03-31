@@ -1,6 +1,6 @@
-package com.symida.accounts.service;
+package com.symida.service;
 
-import com.symida.accounts.entity.Account;
+import com.symida.entity.Account;
 
 import java.util.Collection;
 import java.util.Optional;
