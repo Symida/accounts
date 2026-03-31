@@ -1,5 +1,8 @@
+server:
+  port: 8081
 spring:
-  application.name: accounts
+  application:
+    name: accounts
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/postgres}
     username: postgres
@@ -8,12 +11,5 @@ spring:
     show-sql: false
     hibernate.ddl-auto: none
     database: POSTGRESQL
-symida:
-  accounts:
-    jwt:
-      secret: aVeryLongSecretKeyThatIsAtLeast32Characters
-      expirationMs: 3000000
-  ui:
-    host: ${UI_HOST:localhost:9000}
 springdoc:
   show-actuator: true
