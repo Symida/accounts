@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: accounts
+    name: users
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/postgres}
     username: postgres
