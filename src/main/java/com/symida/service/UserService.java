@@ -1,6 +1,7 @@
 package com.symida.service;
 
 import com.symida.payload.request.UserCreateRequest;
+import com.symida.payload.request.UserVerifyRequest;
 import com.symida.payload.response.UserResponse;
 import jakarta.validation.Valid;
 
@@ -11,5 +12,7 @@ public interface UserService {
 	Optional<UserResponse> findByUsername(String username);
 
 	Optional<UserResponse> createUser(@Valid UserCreateRequest request);
+
+	Optional<UserResponse> verifyUser(@Valid UserVerifyRequest request);
 
 }

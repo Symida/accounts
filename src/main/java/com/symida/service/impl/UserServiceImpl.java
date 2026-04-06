@@ -2,6 +2,7 @@ package com.symida.service.impl;
 
 import com.symida.payload.UserMapper;
 import com.symida.payload.request.UserCreateRequest;
+import com.symida.payload.request.UserVerifyRequest;
 import com.symida.payload.response.UserResponse;
 import com.symida.repository.UserRepository;
 import com.symida.service.UserService;
@@ -20,6 +21,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<UserResponse> findByUsername(String username) {
 		return userRepository.findByUsername(username)
+				.map(userMapper::entityToResponse);
+	}
+
+	@Override
+	public Optional<UserResponse> verifyUser(UserVerifyRequest request) {
+		return userRepository.findByUsernameAndPassword(request.username(), request.password())
 				.map(userMapper::entityToResponse);
 	}
 
