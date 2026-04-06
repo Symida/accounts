@@ -1,0 +1,27 @@
+# Maven
+target/
+!target/*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+*.settings/
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs / CI (не нужны в образе)
+*.md
+.github/
+docs/
+
+# Тесты (собираем с -DskipTests, но на всякий случай)
+src/test/
